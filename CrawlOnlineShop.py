@@ -1,9 +1,16 @@
+
+# coding: utf-8
+
+# In[35]:
+
+
 import sqlite3
 import pymysql
+import sqlite3 as lite
 import re
 import pandas as pd
-#import webbrowser
-#from selenium import webdriver
+import webbrowser
+from selenium import webdriver
 import string
 import smtplib
 import time
@@ -13,6 +20,8 @@ import logging
 from parseWeb import parseRute,parseRaku,parsePc
 
 def check_request(results):
+    db = pymysql.connect(host="192.168.1.102",user="curt",passwd="curt0226",db="example")
+    cursor = db.cursor()
     if(results):
         for r in results:
             newwant = check_newtable(r)
@@ -25,20 +34,20 @@ def check_request(results):
                 title,price,website = checkProd(r[3],r[4],newwant)
                 if len(title)!=0:
                     context = ""
+                    cursor.execute("DELETE FROM example.test where userName = '%s' " %r[1])
                     for j in range(len(title)):
                         url = website[j]
                         ti = title[j]
                         context+=str(j+1) + ti + " \t\t (" + url + ") \n"
-                    sendemail(r[2],r[1] + "您好" + ", \n\n" + "以下是幫您找到的商品。\n" + context)
+                    sendemail(r[2],"Dear " + r[1] + ", \n\n" + "Your product is coming.\n" + context)
                 else:
                     print("not found")
+        cursor.execute("UPDATE example.test SET flag = 1")
+        db.commit()
+        db.close()
         return 1
     else:
         return 0
-        
-def check_database(DB_name):
-    print("GG")
-    
 #比對newtable    
 def check_newtable(r):
     if r[6] == 1:
@@ -79,9 +88,7 @@ def checkProd(searchWord,expPrice,df):
     for char in string.punctuation:                     #去掉字串中符號
         searchWord = searchWord.replace(char, '')
     searchWord = searchWord.replace(" ","")             #刪掉字串空白
-    #print(searchWord)
     b = re.split(r'([\d+])',searchWord,maxsplit=5)
-    #print(b)
     for i in range(len(df.values)):                     #查看資料庫所有資料
         for k in range(len(b)):                         #字串切割後的len
             if(b[k]!=""):                               #不看list中空白部分
@@ -89,7 +96,6 @@ def checkProd(searchWord,expPrice,df):
                     n = n + 1
             else:
                 n  = n + 1
-        #print(n)
         if(n==len(b)):
             if(df.values[i][1] >= expPrice-base and df.values[i][1] <= expPrice+base):#字串符合比對價錢是否符合
                     title+=[df.values[i][0]]
@@ -115,11 +121,9 @@ def sendemail(sendperson,sendcontext):#sendperson要寄的email位置,sendcontex
         the_msg["To"] = sendperson
 
         plain_txt = sendcontext + " \nBest regards,\n"      #內文
-
         context = MIMEText(plain_txt, 'plain', 'utf-8')     
 
         the_msg.attach(context)
-
         # 建立SMTP連線
         email_conn = smtplib.SMTP(host,port)
         #跟Gmail Server溝通
@@ -128,7 +132,6 @@ def sendemail(sendperson,sendcontext):#sendperson要寄的email位置,sendcontex
         email_conn.starttls()
         #登錄Gmail
         print(email_conn.login(username,password))
-        
         #寄信
         email_conn.sendmail(from_email, to_list, the_msg.as_string())#寄信內容
         #關閉連線
@@ -139,7 +142,7 @@ def main():
     #---------------------爬蟲過程------------------
     logging.basicConfig(filename="project.log",format = '%(asctime)s:%(message)')
     try:
-	    #爬露天
+        #爬露天
         rute = parseRute.parseRuten()
         rute.parse()
         #爬樂天
@@ -149,14 +152,14 @@ def main():
         cellphone = parsePc.crawler()
         cellphone.search_items('手機')
         time.sleep(10)
-    
+
         notebook = parsePc.crawler()
         notebook.search_items('筆電')
         time.sleep(10)
-    
+
         pad = parsePc.crawler()
         pad.search_items('平板')
-    
+
         cell = parsePc.database('cellphone')
         cell.conn = sqlite3.connect(cell.db_name)
         cell.cur = cell.conn.cursor()         
@@ -176,26 +179,27 @@ def main():
         paddd.conn.close()
         print("STEP 1")
     except:
-	    logging.error("Error: parsing error")
+        logging.error("Error: parsing error")
     #--------------------接收request----------------
     try:
         db = pymysql.connect(host="192.168.1.102",user="curt",passwd="curt0226",db="example")
         cursor = db.cursor()
         cursor.execute("SELECT * FROM example.test")
         results = cursor.fetchall()
-        cursor.execute("UPDATE example.test SET flag = 1") #更改request flag為1
+        cursor.execute("delete From example.test where time <= DATE(DATE_SUB(NOW(),INTERVAL 7 day));")
         db.commit()
         db.close()
         print("STEP 2")
     except:
-	    logging.error("Error: requests error")
+        logging.error("Error: requests error")
     #-----------------找request相符之商品並寄信-------
     try:
         t = check_request(results)
-        if t == 0:
+        if t ==0:
             print("no request today")
         print("STEP 3")
     except:
-	    logging.error("Error: check_request error")
+        logging.error("Error: check_request error")
 if __name__ == "__main__":
     main()
+
