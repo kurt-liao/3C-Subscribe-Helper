@@ -1,9 +1,3 @@
-
-# coding: utf-8
-
-# In[35]:
-
-
 import sqlite3
 import pymysql
 import sqlite3 as lite
@@ -19,8 +13,12 @@ from email.mime.multipart import MIMEMultipart
 import logging
 from parseWeb import parseRute,parseRaku,parsePc
 
+
+
+
+
 def check_request(results):
-    db = pymysql.connect(host="192.168.1.102",user="curt",passwd="curt0226",db="example")
+    db = pymysql.connect(host="192.168.1.102",user="curt",passwd="curt0226",db="user_infor") #ip要改
     cursor = db.cursor()
     if(results):
         for r in results:
@@ -34,7 +32,7 @@ def check_request(results):
                 title,price,website = checkProd(r[3],r[4],newwant)
                 if len(title)!=0:
                     context = ""
-                    cursor.execute("DELETE FROM example.test where userName = '%s' " %r[1])
+                    cursor.execute("DELETE FROM user_infor.searchtable where userName = '%s' " %r[1])
                     for j in range(len(title)):
                         url = website[j]
                         ti = title[j]
@@ -42,7 +40,7 @@ def check_request(results):
                     sendemail(r[2],"Dear " + r[1] + ", \n\n" + "Your product is coming.\n" + context)
                 else:
                     print("not found")
-        cursor.execute("UPDATE example.test SET flag = 1")
+        cursor.execute("UPDATE user_infor.searchtable SET flag = 1")
         db.commit()
         db.close()
         return 1
@@ -78,7 +76,6 @@ def check_oldtable(r):
     dfold = pd.read_sql_query("SELECT * FROM old WHERE price < %d and price > %d" %(topPrice,lowPrice), conn)
     conn.close()
     return dfold
-    
 def checkProd(searchWord,expPrice,df):
     title = []
     price = []
@@ -101,7 +98,6 @@ def checkProd(searchWord,expPrice,df):
                     title+=[df.values[i][0]]
                     price+=[df.values[i][1]]
                     website+=[df.values[i][2]]
-        
         n = 0
     return title, price, website
 
@@ -182,11 +178,11 @@ def main():
         logging.error("Error: parsing error")
     #--------------------接收request----------------
     try:
-        db = pymysql.connect(host="192.168.1.102",user="curt",passwd="curt0226",db="example")
+        db = pymysql.connect(host="192.168.1.102",user="curt",passwd="curt0226",db="user_infor") #ip要改
         cursor = db.cursor()
-        cursor.execute("SELECT * FROM example.test")
+        cursor.execute("SELECT * FROM user_infor.searchtable")   
         results = cursor.fetchall()
-        cursor.execute("delete From example.test where time <= DATE(DATE_SUB(NOW(),INTERVAL 7 day));")
+        cursor.execute("delete From user_infor.searchtable where dueTime = DATE(NOW());")
         db.commit()
         db.close()
         print("STEP 2")
@@ -202,4 +198,3 @@ def main():
         logging.error("Error: check_request error")
 if __name__ == "__main__":
     main()
-
