@@ -1,24 +1,29 @@
-import sqlite3
-import pymysql
-import sqlite3 as lite
 import re
-import pandas as pd
-import webbrowser
-from selenium import webdriver
-import string
-import smtplib
 import time
+import string
+import pymysql
+import smtplib
+import logging
+import webbrowser
+import pandas as pd
+import sqlite3 as lite
+from selenium import webdriver
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import logging
 from parseWeb import parseRute,parseRaku,parsePc
 
+#---------------------------#
+#	define needed variable	#
+mysqlhost = "192.168.1.102" #
+mysqluser = "curt"			#
+mysqlpasswd = "curt0226"	#
+mysqldb = "user_infor"		#
+#---------------------------#
 
-
-
-
+#-----------------------------------------function needed------------------------------------------------#
+#檢查需求
 def check_request(results):
-    db = pymysql.connect(host="192.168.1.102",user="curt",passwd="curt0226",db="user_infor") #ip要改
+    db = pymysql.connect(host = mysqlhost, user = mysqluser, passwd = mysqlpasswd, db = mysqldb)
     cursor = db.cursor()
     if(results):
         for r in results:
@@ -46,6 +51,7 @@ def check_request(results):
         return 1
     else:
         return 0
+		
 #比對newtable    
 def check_newtable(r):
     if r[6] == 1:
@@ -61,6 +67,7 @@ def check_newtable(r):
     dfnew = pd.read_sql_query("SELECT * FROM new WHERE price < %d and price > %d" %(topPrice,lowPrice), conn)
     conn.close()
     return dfnew
+	
 #比對oldtable
 def check_oldtable(r):
     if r[6] == 1:
@@ -76,6 +83,8 @@ def check_oldtable(r):
     dfold = pd.read_sql_query("SELECT * FROM old WHERE price < %d and price > %d" %(topPrice,lowPrice), conn)
     conn.close()
     return dfold
+	
+#比對需求字串
 def checkProd(searchWord,expPrice,df):
     title = []
     price = []
@@ -100,7 +109,8 @@ def checkProd(searchWord,expPrice,df):
                     website+=[df.values[i][2]]
         n = 0
     return title, price, website
-
+	
+#寄信
 def sendemail(sendperson,sendcontext):#sendperson要寄的email位置,sendcontext寄信內容
     try:
         #gmail信箱的資訊
@@ -134,8 +144,11 @@ def sendemail(sendperson,sendcontext):#sendperson要寄的email位置,sendcontex
         email_conn.quit()
     except:
         logging.error("Error: email sending error.")
+#---------------------------------------------------------------------------------------------------------#
+
+#-----------------------------------------------main function---------------------------------------------#
 def main():
-    #---------------------爬蟲過程------------------
+    #---------------------爬蟲過程------------------#
     logging.basicConfig(filename="project.log",format = '%(asctime)s:%(message)')
     try:
         #爬露天
@@ -176,25 +189,27 @@ def main():
         print("STEP 1")
     except:
         logging.error("Error: parsing error")
-    #--------------------接收request----------------
+    #--------------------接收request----------------#
     try:
-        db = pymysql.connect(host="192.168.1.102",user="curt",passwd="curt0226",db="user_infor") #ip要改
+        db = pymysql.connect(host = mysqlhost, user = mysqluser, passwd = mysqlpasswd, db = mysqldb)
         cursor = db.cursor()
         cursor.execute("SELECT * FROM user_infor.searchtable")   
         results = cursor.fetchall()
-        cursor.execute("delete From user_infor.searchtable where dueTime = DATE(NOW());")
+        cursor.execute("delete From user_infor.searchtable where dueTime = DATE(NOW());") #時間過期刪除
         db.commit()
         db.close()
         print("STEP 2")
     except:
         logging.error("Error: requests error")
-    #-----------------找request相符之商品並寄信-------
+    #-----------------找request相符之商品並寄信-------#
     try:
         t = check_request(results)
-        if t ==0:
+        if t == 0:
             print("no request today")
         print("STEP 3")
     except:
         logging.error("Error: check_request error")
+#----------------------------------------------------------------------------------------------------------#
+
 if __name__ == "__main__":
     main()
