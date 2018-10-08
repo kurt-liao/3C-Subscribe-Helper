@@ -143,7 +143,7 @@ class tablet(scrapy.Spider):
             if(sys.argv[1] == "chrome"):
                 chrome_path = "D:\chromedriver.exe"
                 self.driver = webdriver.Chrome(chrome_path) #chromedriver
-            elif(sys.argv[1] == "firefox")
+            elif(sys.argv[1] == "firefox"):
                 self.driver = webdriver.Firefox()		     
             self.driver.get(self.start_urls[self.CLASS_SWITCH])
             #開始爬蟲

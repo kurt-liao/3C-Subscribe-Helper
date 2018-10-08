@@ -1,0 +1,7 @@
+1538994054229	geckodriver	INFO	geckodriver 0.21.0
+1538994054241	geckodriver	INFO	Listening on 127.0.0.1:59535
+1538994055234	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.VYQNC0OMGtN0"
+1538994056838	Marionette	INFO	Listening on port 37419
+1538994056963	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource:///modules/FormSubmitObserver.jsm, line 214: TypeError: this._mm is null
+*** UTM:SVC TimerManager:registerTimer called after profile-before-change notification. Ignoring timer registration for id: telemetry_modules_ping
