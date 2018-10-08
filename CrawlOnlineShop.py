@@ -14,11 +14,10 @@ from parseWeb import parseRute,parseRaku,parsePc
 
 #---------------------------#
 #	define needed variable	#
-mysqlhost = "192.168.1.102" #
-mysqluser = "curt"			#
-mysqlpasswd = "curt0226"	#
-mysqldb = "user_infor"		#
-#---------------------------#
+mysqlhost = "140.118.155.126"
+mysqluser = "test"			
+mysqlpasswd = "123"	
+mysqldb = "user_infor"		
 
 #-----------------------------------------function needed------------------------------------------------#
 #檢查需求

@@ -140,8 +140,11 @@ class parseRuten(scrapy.Spider):
         self.conn.close()         
         print("database close") 
     def parse(self):
-        chrome_path = "D:\chromedriver.exe"
-        self.driver = webdriver.Chrome(chrome_path) #chromedriver  
+	    if(sys.argv[1] == "chrome"):
+            chrome_path = "D:\chromedriver.exe"
+            self.driver = webdriver.Chrome(chrome_path) #chromedriver
+        elif(sys.argv[1] == "firefox")
+            self.driver = webdriver.Firefox()		
         for start in self.start_urls:
             self.urlclasscount += 1
             #print(self.urlclasscount)
