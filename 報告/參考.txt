@@ -1,0 +1,18 @@
+https://www.youtube.com/watch?v=ceUhb2-gYOU&list=PLohb4k71XnPaQRTvKW4Uii1oq-JPGpwWF   (網路爬蟲實戰教學)
+
+https://docs.python.org/3/library/re.html(re---Regular expression operation)
+
+http://www.runoob.com/python/python-reg-expressions.html(Python 正則表達式)
+
+https://self.jxtsai.info/2016/09/python_22.html(python smtplib)
+
+https://morvanzhou.github.io/tutorials/data-manipulation/scraping/5-01-selenium/(selenium 莫煩)
+
+https://www.phpini.com/mysql/mysql-enable-remote-connect(Mysql 遠端連線)
+
+https://jerrynest.io/python-pandas-get-data/(Python pandas)
+
+http://www.runoob.com/sqlite/sqlite-python.html(Python sqlite)
+
+https://blog.gtwang.org/programming/python-beautiful-soup-module-scrape-web-pages-tutorial/(python bs4)
+
