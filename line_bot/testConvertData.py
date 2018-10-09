@@ -5,10 +5,6 @@ import datetime
 from datetime import timedelta
 
 
-
-dueTime = datetime.datetime.now().strftime("%Y-%m-%d")
-time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
 insertsql = "insert into subDB(username,product,price,type,duetime,is_LineSub) values(?,?,?,?,?,?)"
 
 mysqldb = "user_infor"
@@ -31,14 +27,6 @@ cur.execute('create table if not exists subDB(username text,product text,price t
 cur.execute('select * from subDB')
 results = cur.fetchall()
 
-now = datetime.datetime.now()
-aDay = timedelta(days=14)
-now = now + aDay
-time_text=now.strftime('%Y-%m-%d')
-
-#mycur.execute("INSERT INTO user_infor.searchtable (id, userName, email, product, price, type, flag,dueTime, line) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-#            (int(0), '0','0' , '0', int(0), int(0),  int(0),time_text, int(1)))
-#mysql_conn.commit()
 
 #明軒 in 崇恩
 for i in range(len(pyresults)):

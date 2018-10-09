@@ -26,24 +26,25 @@ def check_request(results):
     cursor = db.cursor()
     if(results):
         for r in results:
-            newwant = check_newtable(r)
-            if r[7]==0:
-                oldwant = check_oldtable(r)
-                newwant = newwant.append(oldwant)
-            if(len(newwant) == 0):
-                print("request no fit")
-            else:
-                title,price,website = checkProd(r[3],r[4],newwant)
-                if len(title)!=0:
-                    context = ""
-                    cursor.execute("DELETE FROM user_infor.searchtable where userName = '%s' " %r[1])
-                    for j in range(len(title)):
-                        url = website[j]
-                        ti = title[j]
-                        context+=str(j+1) + ti + " \t\t (" + url + ") \n"
-                    sendemail(r[2],"Dear " + r[1] + ", \n\n" + "Your product is coming.\n" + context)
+            if(r[8] != 1):
+                newwant = check_newtable(r)
+                if r[6]==0:
+                    oldwant = check_oldtable(r)
+                    newwant = newwant.append(oldwant)
+                if(len(newwant) == 0):
+                    print("request no fit")
                 else:
-                    print("not found")
+                    title,price,website = checkProd(r[2],r[3],newwant)
+                    if len(title)!=0:
+                        context = ""
+                        cursor.execute("DELETE FROM user_infor.searchtable where userName = '%s' " %r[0])
+                        for j in range(len(title)):
+                            url = website[j]
+                            ti = title[j]
+                            context+=str(j+1) + ti + " \t\t (" + url + ") \n"
+                        sendemail(r[1],"Dear " + r[0] + ", \n\n" + "Your product is coming.\n" + context)
+                    else:
+                        print("not found")
         cursor.execute("UPDATE user_infor.searchtable SET flag = 1")
         db.commit()
         db.close()
@@ -53,15 +54,15 @@ def check_request(results):
 		
 #比對newtable    
 def check_newtable(r):
-    if r[6] == 1:
+    if r[5] == 1:
         DB_name = "pad.sqlite"
-    elif r[6] == 2:
+    elif r[5] == 2:
         DB_name = "cellphone.sqlite"
-    elif r[6] == 3:
+    elif r[5] == 3:
         DB_name = "notebook.sqlite"
     dfnew = []
-    topPrice = r[4] + r[4]/5
-    lowPrice = r[4] - r[4]/5
+    topPrice = r[3] + r[3]/5
+    lowPrice = r[3] - r[3]/5
     conn = sqlite3.connect(DB_name)
     dfnew = pd.read_sql_query("SELECT * FROM new WHERE price < %d and price > %d" %(topPrice,lowPrice), conn)
     conn.close()
@@ -69,15 +70,15 @@ def check_newtable(r):
 	
 #比對oldtable
 def check_oldtable(r):
-    if r[6] == 1:
+    if r[5] == 1:
         DB_name = "pad.sqlite"
-    elif r[6] == 2:
+    elif r[5] == 2:
         DB_name = "cellphone.sqlite"
-    elif r[6] == 3:
+    elif r[5] == 3:
         DB_name = "notebook.sqlite"
     dfold = []
-    topPrice = r[4] + r[4]/5
-    lowPrice = r[4] - r[4]/5
+    topPrice = r[3] + r[3]/5
+    lowPrice = r[3] - r[3]/5
     conn = sqlite3.connect(DB_name)
     dfold = pd.read_sql_query("SELECT * FROM old WHERE price < %d and price > %d" %(topPrice,lowPrice), conn)
     conn.close()
@@ -148,6 +149,7 @@ def sendemail(sendperson,sendcontext):#sendperson要寄的email位置,sendcontex
 #-----------------------------------------------main function---------------------------------------------#
 def main():
     #---------------------爬蟲過程------------------#
+    
     logging.basicConfig(filename="project.log",format = '%(asctime)s:%(message)')
     try:
         #爬露天
@@ -188,6 +190,7 @@ def main():
         print("STEP 1")
     except:
         logging.error("Error: parsing error")
+    
     #--------------------接收request----------------#
     try:
         db = pymysql.connect(host = mysqlhost, user = mysqluser, passwd = mysqlpasswd, db = mysqldb)
@@ -209,6 +212,6 @@ def main():
     except:
         logging.error("Error: check_request error")
 #----------------------------------------------------------------------------------------------------------#
-
+    
 if __name__ == "__main__":
     main()

@@ -140,12 +140,14 @@ class tablet(scrapy.Spider):
                 print("can't connect sqlite")
         for start in self.start_urls:				
             #chrome的路徑
-            if(sys.argv[1] == "chrome"):
-                chrome_path = "D:\chromedriver.exe"
-                self.driver = webdriver.Chrome(chrome_path) #chromedriver
-            elif(sys.argv[1] == "firefox"):
-                self.driver = webdriver.Firefox()		     
-            self.driver.get(self.start_urls[self.CLASS_SWITCH])
+            #if(sys.argv[1] == "chrome"):
+            #   chrome_path = "D:\chromedriver.exe"
+            #    self.driver = webdriver.Chrome(chrome_path) #chromedriver
+            #elif(sys.argv[1] == "firefox"):
+            #    self.driver = webdriver.Firefox()
+            chrome_path = "D:\chromedriver.exe"
+            self.driver = webdriver.Chrome(chrome_path) #chromedriver			
+            self.driver.get(start)
             #開始爬蟲
             tablet.parse(self)
             self.CLASS_SWITCH+=1
