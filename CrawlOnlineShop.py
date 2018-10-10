@@ -10,6 +10,7 @@ import time
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import logging
+import jieba
 from parseWeb import parseRute,parseRaku,parsePc
 def check_request(results):
     db = pymysql.connect(host="140.118.155.126",user="test",passwd="123",db="user_infor") #ip要改
@@ -150,7 +151,6 @@ def main():
         #爬樂天
         raku = parseRaku.tablet()
         raku.start_requests()
-        '''
         #爬PC
         cellphone = parsePc.crawler()
         cellphone.search_items('手機')
@@ -181,17 +181,16 @@ def main():
         paddd.insert_items(pad.items, 'new')
         paddd.conn.close()
         print("STEP 1")
-    '''
     except:
         logging.error("Error: parsing error")
-    '''
+    
     #--------------------接收request----------------
     try:
         db = pymysql.connect(host="140.118.155.126",user="test",passwd="123",db="user_infor") #ip要改
         cursor = db.cursor()
         cursor.execute("SELECT * FROM user_infor.searchtable")   
         results = cursor.fetchall()
-        cursor.execute("delete From user_infor.searchtable where dueTime = DATE(NOW());")
+        cursor.execute("delete From user_infor.searchtable where dueTime = DATE(NOW()) AND line = 0;")
         db.commit()
         db.close()
         print("STEP 2")
@@ -205,6 +204,5 @@ def main():
         print("STEP 3")
     except:
         logging.error("Error: check_request error")
-    '''
 if __name__ == "__main__":
     main()
