@@ -30,15 +30,6 @@ handler = WebhookHandler('5452cb66344cc531747d23bc02579e8f')
 import datetime
 import sched
 
-
-"""
-    if event.message.text=="a":
-        result=db.get_tabletitem()
-        title, price, website=checkProd("ipad 128g",13800,result)
-        print(title[0])
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text="測試"))
-        db.close_db()
-    """
 #取商品資料庫
 cellphone_items=db.get_cellphoneitem_new()
 print(cellphone_items[0])
@@ -237,13 +228,7 @@ def handle_message(event):
 #---------------------------------------------------------------------------------------------
         elif event.message.text=="查看" and LINE_COMMAND==3:
             db.connect_mysqlDB()
-            """
-            USERNAME=db.get_username(userID)
-            user_text=str(USERNAME)
-            test=user_text[2:-3]
-            #print(test)
-            test=test.replace('\'','')
-            """
+
             SUB=db.get_sub(account_number)
             
             i=0
@@ -262,13 +247,7 @@ def handle_message(event):
 #---------------------------------------------------------------------------------------------
         elif event.message.text=="刪除" and LINE_COMMAND==3:
             db.connect_mysqlDB()
-            """
-            USERNAME=db.get_username(userID)
-            user_text=str(USERNAME)
-            test=user_text[2:-3]
-            #print(test)
-            test=test.replace('\'','')
-            """
+
             SUB=db.get_sub(account_number)
             #print(test)
             #print(SUB)
@@ -288,12 +267,7 @@ def handle_message(event):
             db.close_db()
         elif LINE_COMMAND==4:
             db.connect_mysqlDB()
-            """
-            USERNAME=db.get_username(userID)
-            user_text=str(USERNAME)
-            test=user_text[2:-3]
-            test=test.replace('\'','')
-            """
+ 
             SUB=db.get_sub(account_number)
             is_number=check_is_number(event.message.text)
             if is_number==True:
@@ -342,12 +316,7 @@ def handle_message(event):
             db.close_db()
         elif LINE_COMMAND==7:
             db.connect_mysqlDB()
-            """
-            USERNAME=db.get_username(userID)
-            user_text=str(USERNAME)
-            test=user_text[2:-3]
-            test=test.replace('\'','')
-            """
+
             is_number=check_is_number(event.message.text)
             if is_number==False:
                 line_bot_api.reply_message(event.reply_token,TextSendMessage(text="價錢輸入錯誤，請重新輸入指令"))
@@ -454,142 +423,6 @@ def handle_message(event):
                 LINE_COMMAND=3
                 db.change_command(userID,LINE_COMMAND)
             db.close_db()
-        
-            
-            
-
-
-    """
-    if event.message.text=="a":
-        result=db.get_tabletitem()
-        title, price, website=checkProd("ipad 128g",13800,result)
-        print(title[0])
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text="測試"))
-        db.close_db()
-    """
-
-    #第一次
-    """
-    if event.message.text == "訂閱":
-        db.__init__()
-        db.setup()
-        #增加user到資料庫
-        check_userid=db.check_db_id(userID)
-        print(check_userid)
-        if check_userid==0:
-            db.add_user(userID)
-        #確認資料庫能否繼續存商品
-        temp=db.get_productnum(userID)
-        product_num=int(temp[0])
-        if product_num==2:
-            line_bot_api.reply_message(event.reply_token,TextSendMessage(text="訂購數目已滿"))
-        else :
-            line_bot_api.reply_message(event.reply_token,TextSendMessage(text="請輸入商品名稱"))
-            sub_check.append(1)
-        db.close_db()
-    elif len(sub_check)!=0 and sub_check[0]==1:
-        db.__init__()
-        db.setup()
-
-        temp=db.get_productnum(userID)
-        product_num=int(temp[0])
-        if product_num==0:
-            db.add_item1(userID,msg)
-        elif product_num==1:
-            db.add_item2(userID,msg)
-
-        db.close_db()
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text="完成訂閱"))
-        sub_check.clear()
-
-    if event.message.text == "查看":
-        db.__init__()
-        db.setup()
-        temp=db.get_productnum(userID)
-        product_num=int(temp[0])
-        item1,item2=db.get_items(userID)
-        item1_text=str(item1)
-        item2_text=str(item2)
-        if product_num==2:
-            items_text="訂購商品\n1: "+item1_text[2:-2]+"\n"+"2: "+item2_text[2:-2]
-        elif product_num==1:
-            items_text="訂購商品\n1: "+item1_text[2:-2]
-        elif product_num==0:
-            items_text="訂購商品\n"
-        print(items_text)
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text=items_text))
-        db.close_db()
-
-    if event.message.text == "刪除":
-        db.__init__()
-        db.setup()
-        temp=db.get_productnum(userID)
-        product_num=int(temp[0])
-        if product_num!=0:
-            line_bot_api.reply_message(event.reply_token,TextSendMessage(text="請輸入商品編號"))
-            delete_check.append(1)
-        else:
-            line_bot_api.reply_message(event.reply_token,TextSendMessage(text="目前無訂購商品"))
-        db.close_db()
-    elif len(delete_check)!=0 and delete_check[0]==1:
-        if event.message.text=="1":
-            db.__init__()
-            db.setup()
-            temp=db.get_productnum(userID)
-            product_num=int(temp[0])
-            item1,item2=db.get_items(userID)
-            item1_text=str(item1)
-            item2_text=str(item2)
-            if product_num==1:
-                db.update_item(userID,"","",product_num-1)
-                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="完成刪除"))
-            elif product_num==2:
-                db.update_item(userID,item2_text[2:-2],"",product_num-1)
-                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="完成刪除"))
-            else:
-                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="請重新輸入指令"))
-            db.close_db()
-        elif event.message.text=="2":
-            db.__init__()
-            db.setup()
-            temp=db.get_productnum(userID)
-            product_num=int(temp[0])
-            item1,item2=db.get_items(userID)
-            item1_text=str(item1)
-            item2_text=str(item2)
-            if product_num==2:
-                db.update_item(userID,item1_text[2:-2],"",product_num-1)
-                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="完成刪除"))
-            else:
-                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="請重新輸入指令"))
-            db.close_db()           
-        delete_check.clear()
-    """
-
-
-
-
-
-
-
-
-    """
-    #line_bot_api.reply_message(event.reply_token,TextSendMessage(text=event.message.text))
-    #if event.message.text==a:
-     #   line_bot_api.reply_message(event.reply_token,TextSendMessage(123))
-    if event.message.text == "文字":
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text=event.message.text))
-    elif event.message.text == "貼圖":
-        line_bot_api.reply_message(event.reply_token,StickerSendMessage(package_id=1, sticker_id=2))   
-    elif event.message.text == "圖片":
-        line_bot_api.reply_message(event.reply_token,ImageSendMessage(original_content_url='https://ppt.cc/fdMxIx@.jpg', preview_image_url='https://ppt.cc/fdMxIx@.jpg'))
-    elif event.message.text == "影片":#影片需要是https然後結尾是mp4的網址，也就是用youtube的網址是無法直接觀看的。
-        line_bot_api.reply_message(event.reply_token,VideoSendMessage(original_content_url='影片網址', preview_image_url='預覽的圖片網址'))
-    elif event.message.text == "音訊":#音訊需要是https然後結尾是m4a的網址，也就是用youtube的網址是無法直接傳送的。duration是指音訊的時間長短設定
-        line_bot_api.reply_message(event.reply_token,AudioSendMessage(original_content_url='音訊網址', duration=100000))
-    elif event.message.text == "位置":
-        line_bot_api.reply_message(event.reply_token,LocationSendMessage(title='my location', address='Tainan', latitude=22.994821, longitude=120.196452))
-    """
 
 if __name__ == "__main__":
     app.run(debug=True,port=5000)

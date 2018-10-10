@@ -91,7 +91,8 @@ class tablet(scrapy.Spider):
                 elif(self.CLASS_SWITCH==1):
                     self.conn = lite.connect('notebook.sqlite') 
                 elif(self.CLASS_SWITCH==2):
-                    self.conn = lite.connect('pad.sqlite') 
+                    self.conn = lite.connect('pad.sqlite')
+                print(self.CLASS_SWITCH)					
                 self.cur = self.conn.cursor()
                 self.cur.execute('create table if not exists new(title text,price integer,website text,date timestamp,flag integer);')
                 self.cur.execute("SELECT * FROM new where flag = '2';")
@@ -109,7 +110,7 @@ class tablet(scrapy.Spider):
                 for i in range(len(results)):                       #將商品放進cellphone
                     self.cur.execute(self.old_sql,(results[i][0],results[i][1],results[i][2],results[i][3],'2')) 
                     self.conn.commit()
-                print("success insert data from new to cellphone")
+                print("success insert data from new to old")
                 self.conn.close()       
                 #print("new table database close")
 
@@ -119,7 +120,8 @@ class tablet(scrapy.Spider):
                 elif(self.CLASS_SWITCH==1):
                     self.conn = lite.connect('notebook.sqlite') 
                 elif(self.CLASS_SWITCH==2):
-                    self.conn = lite.connect('pad.sqlite')             
+                    self.conn = lite.connect('pad.sqlite')
+                print(self.CLASS_SWITCH)					
                 self.cur = self.conn.cursor() 
                 self.cur.execute('create table if not exists old(title text,price integer,website text,date timestamp,flag integer);')
                 self.cur.execute("SELECT * FROM old where flag='2';")
@@ -137,18 +139,16 @@ class tablet(scrapy.Spider):
                 self.conn.close()         
                 #print("old table database close")
             except:             
-                print("can't connect sqlite")
-        for start in self.start_urls:				
+                print("can't connect sqlite")			
             #chrome的路徑
-            #if(sys.argv[1] == "chrome"):
-            #   chrome_path = "D:\chromedriver.exe"
-            #    self.driver = webdriver.Chrome(chrome_path) #chromedriver
-            #elif(sys.argv[1] == "firefox"):
-            #    self.driver = webdriver.Firefox()
-            chrome_path = "D:\chromedriver.exe"
-            self.driver = webdriver.Chrome(chrome_path) #chromedriver			
-            self.driver.get(start)
+            if(sys.argv[1] == "chrome"):
+                chrome_path = "D:\chromedriver.exe"
+                self.driver = webdriver.Chrome(chrome_path) #chromedriver
+            elif(sys.argv[1] == "firefox"):
+                self.driver = webdriver.Firefox()		
+            self.driver.get(self.start_urls[self.CLASS_SWITCH])
             #開始爬蟲
+            print(self.CLASS_SWITCH)
             tablet.parse(self)
             self.CLASS_SWITCH+=1
     #爬蟲    

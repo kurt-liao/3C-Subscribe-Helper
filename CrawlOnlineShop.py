@@ -74,29 +74,34 @@ def check_oldtable(r):
     conn.close()
     return dfold
     
-def checkProd(searchWord,expPrice,df):
+def checkProd(searchWord,expPrice,database):
+    df=pd.DataFrame(database)
+    cutWord = []
+    n = 0
     title = []
     price = []
     website = []
-    n = 0
-    base = expPrice/5                                   #價錢基準化
+    base = expPrice/5
     for char in string.punctuation:                     #去掉字串中符號
         searchWord = searchWord.replace(char, '')
-    searchWord = searchWord.replace(" ","")             #刪掉字串空白
-    b = re.split(r'([\d+])',searchWord,maxsplit=5)
-    for i in range(len(df.values)):                     #查看資料庫所有資料
-        for k in range(len(b)):                         #字串切割後的len
-            if(b[k]!=""):                               #不看list中空白部分
-                if(re.search(b[k],df.values[i][0],re.IGNORECASE)):#比對字串中符合之字串
-                    n = n + 1
-            else:
-                n  = n + 1
-        if(n==len(b)):
+    wordlist = jieba.cut_for_search(searchWord)         #利用結巴斷詞
+    #print(wordlist)
+    for i in wordlist:
+        cutWord += [i]
+    res = filter(none_empty, cutWord)                   #去掉list中空白部分
+    cutWord = []
+    for i in res:
+        cutWord += [i]
+    print(cutWord)
+    for i in range(len(df.values)):
+        for k in range(len(cutWord)):
+            if(re.search(cutWord[k],df.values[i][0],re.IGNORECASE)):#比對字串中符合之字串
+                n = n + 1
+        if(n==len(cutWord)):
             if(df.values[i][1] >= expPrice-base and df.values[i][1] <= expPrice+base):#字串符合比對價錢是否符合
                     title+=[df.values[i][0]]
                     price+=[df.values[i][1]]
                     website+=[df.values[i][2]]
-        
         n = 0
     return title, price, website
 
@@ -134,17 +139,18 @@ def sendemail(sendperson,sendcontext):#sendperson要寄的email位置,sendcontex
     except:
         logging.error("Error: email sending error.")
 def main():
-    '''
+  
     #---------------------爬蟲過程------------------
     logging.basicConfig(filename="project.log",format = '%(asctime)s:%(message)')
     
     try:
         #爬露天
-        rute = parseRute.parseRuten()
-        rute.parse()
+        #rute = parseRute.parseRuten()
+        #rute.parse()
         #爬樂天
         raku = parseRaku.tablet()
         raku.start_requests()
+        '''
         #爬PC
         cellphone = parsePc.crawler()
         cellphone.search_items('手機')
@@ -175,6 +181,7 @@ def main():
         paddd.insert_items(pad.items, 'new')
         paddd.conn.close()
         print("STEP 1")
+    '''
     except:
         logging.error("Error: parsing error")
     '''
@@ -198,5 +205,6 @@ def main():
         print("STEP 3")
     except:
         logging.error("Error: check_request error")
+    '''
 if __name__ == "__main__":
     main()
