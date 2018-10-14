@@ -48,8 +48,20 @@ for i in range(len(results)):
         (results[i][0],results[i][1] , int(results[i][2]), int(results[i][3]),int(0), results[i][4], results[i][5]))
         mysql_conn.commit()
     else:
-	    print("it's already exist")
+        print("it's already exist")
     cur.execute('UPDATE subDB SET isInSql = 1')
     conn.commit()
+#刪掉不存在的商品
+for i in range(len(pyresults)):
+    count = 0
+    if(pyresults[i][9] == 1):
+        for j in range(len(results)):
+            if(pyresults[i][1] == results[j][0] and pyresults[i][3] == results[j][1] and pyresults[i][4] == results[j][2] and pyresults[i][6] == results[j][3]):
+                count = 1
+        print(count)
+        if(count == 0):
+            mycur.execute("delete from user_infor.searchtable where id = '%s' " %int(pyresults[i][0]))
+            mysql_conn.commit()
+        #print("OK")
 conn.close()
 mysql_conn.close()
