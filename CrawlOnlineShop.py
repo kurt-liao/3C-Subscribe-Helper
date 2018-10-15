@@ -89,7 +89,7 @@ def checkProd(searchWord,expPrice,database):
     #print(wordlist)
     for i in wordlist:
         cutWord += [i]
-    res = filter(none_empty, cutWord)                   #去掉list中空白部分
+    res = filter(None, cutWord)                   #去掉list中空白部分
     cutWord = []
     for i in res:
         cutWord += [i]
@@ -142,8 +142,9 @@ def sendemail(sendperson,sendcontext):#sendperson要寄的email位置,sendcontex
 def main():
   
     #---------------------爬蟲過程------------------
-    logging.basicConfig(filename="project.log",format = '%(asctime)s:%(message)')
     
+    logging.basicConfig(filename="project.log",format = '%(asctime)s:%(message)',level = logging.NOTSET)
+    logging.info('rakuten')
     try:
         #爬露天
         #rute = parseRute.parseRuten()
@@ -151,6 +152,7 @@ def main():
         #爬樂天
         raku = parseRaku.tablet()
         raku.start_requests()
+        logging.info('rakuten')
         #爬PC
         cellphone = parsePc.crawler()
         cellphone.search_items('手機')
@@ -181,6 +183,7 @@ def main():
         paddd.insert_items(pad.items, 'new')
         paddd.conn.close()
         print("STEP 1")
+        logging.info('pchome')
     except:
         logging.error("Error: parsing error")
     

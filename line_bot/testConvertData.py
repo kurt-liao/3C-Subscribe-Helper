@@ -62,6 +62,6 @@ for i in range(len(pyresults)):
         if(count == 0):
             mycur.execute("delete from user_infor.searchtable where id = '%s' " %int(pyresults[i][0]))
             mysql_conn.commit()
-        #print("OK")
+            print("Request '%s' was not exist")
 conn.close()
 mysql_conn.close()
