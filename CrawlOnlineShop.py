@@ -56,27 +56,41 @@ def main():
 		timer = threading.Timer(180, func)
 		timer.start()
 	def getMysql():
+		conn = lite.connect('./Database/mysqlDB.sqlite') 
+		cur = conn.cursor()
+		cur.execute("SELECT * FROM subDB")
 		db = pymysql.connect(host="140.118.155.126",user="test",passwd="123",db="user_infor") #ip要改
 		cursor = db.cursor()
 		cursor.execute("SELECT * FROM user_infor.searchtable")
-		results = cursor.fetchall()
-		global count
-		if count!=len(results):
+		cursor.execute("SELECT * FROM user_infor.userinformation")
+		prodData = cursor.fetchall()
+		userData = cursor.fetchall()
+		lineSub = cur.fetchall()
+		global productC,userC, lineC
+		if productC!=len(prodData) or userC!=len(userData) or lineC!=len(lineSub):
 			ConvertData.passDatabase()
 		else:
 			print("continue")
-		count = len(results)
-		print(count)
+		productC = len(prodData)
+		print(productC)
 		db.close()
 		threading.Timer(10,getMysql).start()
+	conn = lite.connect('./Database/mysqlDB.sqlite') 
+	cur = conn.cursor()
 	db = pymysql.connect(host="140.118.155.126",user="test",passwd="123",db="user_infor") #ip要改
 	cursor = db.cursor()
+	cur.execute("SELECT * FROM subDB")
 	cursor.execute("SELECT * FROM user_infor.searchtable")
-	results = cursor.fetchall()
+	cursor.execute("SELECT * FROM user_infor.userinformation")
+	prodData = cursor.fetchall()
+	userData = cursor.fetchall()
+	lineSub = cur.fetchall()
 	db.close()
-	global count
+	global productC, userC, lineC
 	threads = []
-	count = len(results)
+	productC = len(prodData)
+	userC = len(userData)
+	lineC = len(lineSub)
 	func()
 	getMysql()
 if __name__ == "__main__":
