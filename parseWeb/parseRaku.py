@@ -59,19 +59,19 @@ class tablet(scrapy.Spider):
          
     def __init__(self):
         try:
-            self.conn = lite.connect('cellphone.sqlite') 
+            self.conn = lite.connect('./Database/cellphone.sqlite') 
             self.cur = self.conn.cursor()
             self.cur.execute('create table if not exists old(title text,price integer,website text,date timestamp,flag);')
             self.cur.execute('create table if not exists new(title text,price integer,website text,date timestamp,flag);')
             self.conn.close()         
 
-            self.conn = lite.connect('notebook.sqlite') 
+            self.conn = lite.connect('./Database/notebook.sqlite') 
             self.cur = self.conn.cursor()
             self.cur.execute('create table if not exists old(title text,price integer,website text,date timestamp,flag);')
             self.cur.execute('create table if not exists new(title text,price integer,website text,date timestamp,flag);')
             self.conn.close() 
 
-            self.conn = lite.connect('pad.sqlite')
+            self.conn = lite.connect('./Database/pad.sqlite')
             self.cur = self.conn.cursor()
             self.cur.execute('create table if not exists old(title text,price integer,website text,date timestamp,flag);')
             self.cur.execute('create table if not exists new(title text,price integer,website text,date timestamp,flag);')
@@ -87,11 +87,11 @@ class tablet(scrapy.Spider):
             try:            
                 #開new資料庫
                 if(self.CLASS_SWITCH==0):
-                    self.conn = lite.connect('cellphone.sqlite') 
+                    self.conn = lite.connect('./Database/cellphone.sqlite') 
                 elif(self.CLASS_SWITCH==1):
-                    self.conn = lite.connect('notebook.sqlite') 
+                    self.conn = lite.connect('./Database/notebook.sqlite') 
                 elif(self.CLASS_SWITCH==2):
-                    self.conn = lite.connect('pad.sqlite')
+                    self.conn = lite.connect('./Database/pad.sqlite')
                 print(self.CLASS_SWITCH)					
                 self.cur = self.conn.cursor()
                 self.cur.execute('create table if not exists new(title text,price integer,website text,date timestamp,flag integer);')
@@ -116,11 +116,11 @@ class tablet(scrapy.Spider):
 
                 #抓old資料庫的資料
                 if(self.CLASS_SWITCH==0):
-                    self.conn = lite.connect('cellphone.sqlite') 
+                    self.conn = lite.connect('./Database/cellphone.sqlite') 
                 elif(self.CLASS_SWITCH==1):
-                    self.conn = lite.connect('notebook.sqlite') 
+                    self.conn = lite.connect('./Database/notebook.sqlite') 
                 elif(self.CLASS_SWITCH==2):
-                    self.conn = lite.connect('pad.sqlite')
+                    self.conn = lite.connect('./Database/pad.sqlite')
                 print(self.CLASS_SWITCH)					
                 self.cur = self.conn.cursor() 
                 self.cur.execute('create table if not exists old(title text,price integer,website text,date timestamp,flag integer);')
@@ -213,11 +213,11 @@ class tablet(scrapy.Spider):
                     
                 if(len(self.old_inweb)==0):#資料庫沒有東西，加入第一個商品
                     if(self.CLASS_SWITCH==0):
-                        self.conn = lite.connect('cellphone.sqlite') 
+                        self.conn = lite.connect('./Database/cellphone.sqlite') 
                     elif(self.CLASS_SWITCH==1):
-                        self.conn = lite.connect('notebook.sqlite') 
+                        self.conn = lite.connect('./Database/notebook.sqlite') 
                     elif(self.CLASS_SWITCH==2):
-                        self.conn = lite.connect('pad.sqlite') 
+                        self.conn = lite.connect('./Database/pad.sqlite') 
                     self.cur = self.conn.cursor()
                     self.cur.execute(self.new_sql,(title,price,website,date,'2'))
                     #self.cur.execute(self.old_sql,(title,price,website,date,'2'))
@@ -230,11 +230,11 @@ class tablet(scrapy.Spider):
                             self.old_check_exist[fi]=1
                             if(int(price)!=self.old_inprice[fi]):#不一樣價格   
                                 if(self.CLASS_SWITCH==0):
-                                    self.conn = lite.connect('cellphone.sqlite') 
+                                    self.conn = lite.connect('./Database/cellphone.sqlite') 
                                 elif(self.CLASS_SWITCH==1):
-                                    self.conn = lite.connect('notebook.sqlite') 
+                                    self.conn = lite.connect('./Database/notebook.sqlite') 
                                 elif(self.CLASS_SWITCH==2):
-                                    self.conn = lite.connect('pad.sqlite')
+                                    self.conn = lite.connect('./Database/pad.sqlite')
                                 self.cur = self.conn.cursor()
                                 self.cur.execute(self.new_sql,(title,price,website,date,'2'))#將改動價格的商品加到new db
                                 self.cur.execute("delete from old where website = '%s' " %website)
@@ -242,11 +242,11 @@ class tablet(scrapy.Spider):
                                 print("change price success.") 
                     if(self.count ==0):#新增新的商品
                         if(self.CLASS_SWITCH==0):
-                            self.conn = lite.connect('cellphone.sqlite') 
+                            self.conn = lite.connect('./Database/cellphone.sqlite') 
                         elif(self.CLASS_SWITCH==1):
-                            self.conn = lite.connect('notebook.sqlite') 
+                            self.conn = lite.connect('./Database/notebook.sqlite') 
                         elif(self.CLASS_SWITCH==2):
-                            self.conn = lite.connect('pad.sqlite')
+                            self.conn = lite.connect('./Database/pad.sqlite')
                         self.cur = self.conn.cursor()
                         self.cur.execute(self.new_sql,(title,price,website,date,'2'))
                         #self.cur.execute(self.old_sql,(title,price,website,date,'2'))
@@ -271,11 +271,11 @@ class tablet(scrapy.Spider):
                 break;
         
         if(self.CLASS_SWITCH==0):
-            self.conn = lite.connect('cellphone.sqlite') 
+            self.conn = lite.connect('./Database/cellphone.sqlite') 
         elif(self.CLASS_SWITCH==1):
-            self.conn = lite.connect('notebook.sqlite') 
+            self.conn = lite.connect('./Database/notebook.sqlite') 
         elif(self.CLASS_SWITCH==2):
-            self.conn = lite.connect('pad.sqlite') 
+            self.conn = lite.connect('./Database/pad.sqlite') 
         self.cur = self.conn.cursor()
         
         #print(page_count)

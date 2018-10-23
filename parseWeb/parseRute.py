@@ -57,19 +57,19 @@ class parseRuten(scrapy.Spider):
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36"
     }
     def __init__(self):
-        self.conn = lite.connect('cellphone.sqlite')
+        self.conn = lite.connect('./Database/cellphone.sqlite')
         self.cur = self.conn.cursor()
         self.cur.execute('create table if not exists old(title text,price integer,website text,date timestamp,flag);')
         self.cur.execute('create table if not exists new(title text,price integer,website text,date timestamp,flag);')
         self.conn.close()
         #print("init cellphone")
-        self.conn = lite.connect('notebook.sqlite')
+        self.conn = lite.connect('./Database/notebook.sqlite')
         self.cur = self.conn.cursor()
         self.cur.execute('create table if not exists old(title text,price integer,website text,date timestamp,flag);')
         self.cur.execute('create table if not exists new(title text,price integer,website text,date timestamp,flag);')
         self.conn.close()
         #print("init notebook")
-        self.conn = lite.connect('pad.sqlite')
+        self.conn = lite.connect('./Database/pad.sqlite')
         self.cur = self.conn.cursor()
         self.cur.execute('create table if not exists old(title text,price integer,website text,date timestamp,flag);')
         self.cur.execute('create table if not exists new(title text,price integer,website text,date timestamp,flag);')
@@ -79,17 +79,17 @@ class parseRuten(scrapy.Spider):
     def initFunc(self):
         try:
             if(self.urlclasscount ==1):
-                self.conn = lite.connect('cellphone.sqlite')
+                self.conn = lite.connect('./Database/cellphone.sqlite')
                 self.cur = self.conn.cursor()                       
                 self.cur.execute("SELECT * FROM new where flag = '1';")
                 self.urlclasscount = 1
             elif(self.urlclasscount==2):
-                self.conn = lite.connect('notebook.sqlite')
+                self.conn = lite.connect('./Database/notebook.sqlite')
                 self.cur = self.conn.cursor()                       
                 self.cur.execute("SELECT * FROM new where flag = '1';")
                 self.urlclasscount = 2
             elif(self.urlclasscount==3):
-                self.conn = lite.connect('pad.sqlite')
+                self.conn = lite.connect('./Database/pad.sqlite')
                 self.cur = self.conn.cursor()                       
                 self.cur.execute("SELECT * FROM new where flag = '1';")
                 self.urlclasscount = 3
@@ -109,19 +109,19 @@ class parseRuten(scrapy.Spider):
                 print("success insert data from new to cellphone")
                 self.conn.close() 
             if(self.urlclasscount ==1):
-                self.conn = lite.connect('cellphone.sqlite')             #檢查new裡面有無商品，若有就拿出
+                self.conn = lite.connect('./Database/cellphone.sqlite')             #檢查new裡面有無商品，若有就拿出
                 self.cur = self.conn.cursor()                       
                 self.cur.execute("SELECT * FROM old where flag='1';")
                 self.urlclasscount = 1
                 #self.conn.close()
             elif(self.urlclasscount==2):
-                self.conn = lite.connect('notebook.sqlite')
+                self.conn = lite.connect('./Database/notebook.sqlite')
                 self.cur = self.conn.cursor()                       
                 self.cur.execute("SELECT * FROM old where flag='1';")
                 self.urlclasscount = 2
                 #self.conn.close()
             elif(self.urlclasscount==3):
-                self.conn = lite.connect('pad.sqlite')
+                self.conn = lite.connect('./Database/pad.sqlite')
                 self.cur = self.conn.cursor()                       
                 self.cur.execute("SELECT * FROM old where flag='1';")
                 self.urlclasscount = 3
@@ -172,11 +172,11 @@ class parseRuten(scrapy.Spider):
                     price = int(strclear(price,','))                         #price
                     if(len(self.db_inweb)==0):                            #第一次執行，cellphone裡面沒任何資料
                         if(self.urlclasscount==1):
-                            self.conn = lite.connect('cellphone.sqlite')
+                            self.conn = lite.connect('./Database/cellphone.sqlite')
                         elif(self.urlclasscount==2):
-                            self.conn = lite.connect('notebook.sqlite')
+                            self.conn = lite.connect('./Database/notebook.sqlite')
                         elif(self.urlclasscount==3):
-                            self.conn = lite.connect('pad.sqlite')
+                            self.conn = lite.connect('./Database/pad.sqlite')
                         self.cur = self.conn.cursor()
                         self.cur.execute(self.sqlnew,(title,price,website,date,'1'))
                         self.conn.commit()
@@ -187,15 +187,15 @@ class parseRuten(scrapy.Spider):
                                 self.count =1
                                 if(price != self.db_inprice[fi]):         #同筆資料，價錢更改
                                     if(self.urlclasscount==1):
-                                        self.conn = lite.connect('cellphone.sqlite')
+                                        self.conn = lite.connect('./Database/cellphone.sqlite')
                                         self.cur = self.conn.cursor()
                                         print(self.urlclasscount)
                                     elif(self.urlclasscount==2):
-                                        self.conn = lite.connect('notebook.sqlite')
+                                        self.conn = lite.connect('./Database/notebook.sqlite')
                                         self.cur = self.conn.cursor()
                                         print(self.urlclasscount)
                                     elif(self.urlclasscount==3):
-                                        self.conn = lite.connect('pad.sqlite')             
+                                        self.conn = lite.connect('./Database/pad.sqlite')             
                                         self.cur = self.conn.cursor()
                                         print(self.urlclasscount)
                                     self.cur.execute(self.sqlnew,(title,price,website,date,'1'))   #insert into new
@@ -204,13 +204,13 @@ class parseRuten(scrapy.Spider):
                                     self.conn.commit()
                         if(self.count ==0):
                             if(self.urlclasscount==1):
-                                self.conn = lite.connect('cellphone.sqlite')
+                                self.conn = lite.connect('./Database/cellphone.sqlite')
                                 self.cur = self.conn.cursor()
                             elif(self.urlclasscount==2):
-                                self.conn = lite.connect('notebook.sqlite')
+                                self.conn = lite.connect('./Database/notebook.sqlite')
                                 self.cur = self.conn.cursor()
                             elif(self.urlclasscount==3):
-                                self.conn = lite.connect('pad.sqlite')
+                                self.conn = lite.connect('./Database/pad.sqlite')
                                 self.cur = self.conn.cursor()
                             self.cur.execute(self.sqlnew,(title,price,website,date,'1'))
                             
@@ -229,13 +229,13 @@ class parseRuten(scrapy.Spider):
                 for i in range(len(self.db_inweb)):                                        #若資料庫資料完全沒被比對到，就刪除那筆資料
                     if(self.db_incheck[i]==0):
                         if(self.urlclasscount==1):
-                            self.conn = lite.connect('cellphone.sqlite')
+                            self.conn = lite.connect('./Database/cellphone.sqlite')
                             self.cur = self.conn.cursor()
                         elif(self.urlclasscount==2):
-                            self.conn = lite.connect('notebook.sqlite')
+                            self.conn = lite.connect('./Database/notebook.sqlite')
                             self.cur = self.conn.cursor()
                         elif(self.urlclasscount==3):
-                            self.conn = lite.connect('pad.sqlite')
+                            self.conn = lite.connect('./Database/pad.sqlite')
                             self.cur = self.conn.cursor()      
                         #print(self.databaseclass[self.urlclasscount-1])
                         self.cur.execute("delete from old where website = '%s' " %self.db_inweb[i])

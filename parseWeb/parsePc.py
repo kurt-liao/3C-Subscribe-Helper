@@ -43,7 +43,7 @@ class database():
     #初始化DB,name是創建資料庫的名字
     def __init__(self, name):
         try:      
-            self.db_name = name + '.sqlite'
+            self.db_name = './Database/' + name + '.sqlite'
             self.conn = sqlite3.connect(self.db_name)
             print("%s database create success" % self.db_name)   
             print("Database connected")
