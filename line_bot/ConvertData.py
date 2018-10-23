@@ -20,12 +20,13 @@ def passDatabase():
 	mycur.execute("SELECT * FROM user_infor.searchtable")
 	pyresults = mycur.fetchall()
 	#崇恩 database
-	conn = lite.connect('line_bot\mysqlDB.sqlite')
+	conn = lite.connect('../Database/mysqlDB.sqlite')
+	print("sql")
 	cur = conn.cursor()
-	cur.execute('create table if not exists subDB(username text,product text,price text,type text,duetime timestamp,is_LineSub int);')
+	cur.execute('create table if not exists subDB(username text,product text,price text,type text,duetime timestamp,is_LineSub int,isInSql INTEGER);')
 	cur.execute('select * from subDB')
 	results = cur.fetchall()
-
+	print(len(results))
 
 	#明軒 in 崇恩
 	for i in range(len(pyresults)):

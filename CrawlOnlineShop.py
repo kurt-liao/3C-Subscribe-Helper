@@ -19,8 +19,8 @@ from parseWeb import parseRute,parseRaku,parsePc
 def main():
 	def job(num):
 		if num == 0:
-			rute = parseRute.parseRuten()
-			rute.parse()
+			#rute = parseRute.parseRuten()
+			#rute.parse()
 			pass
 		elif num == 1:
 			#raku = parseRaku.tablet()
@@ -82,7 +82,7 @@ def main():
 		timer = threading.Timer(180, func)
 		timer.start()
 	def getMysql():
-		conn = lite.connect('./Database/mysqlDB.sqlite') 
+		conn = lite.connect('Database/mysqlDB.sqlite') 
 		cur = conn.cursor()
 		cur.execute("SELECT * FROM subDB")
 		db = pymysql.connect(host="140.118.155.126",user="test",passwd="123",db="user_infor") #ip要改
@@ -101,7 +101,7 @@ def main():
 		print(productC)
 		db.close()
 		threading.Timer(10,getMysql).start()
-	conn = lite.connect('./Database/mysqlDB.sqlite') 
+	conn = lite.connect('Database/mysqlDB.sqlite') 
 	cur = conn.cursor()
 	db = pymysql.connect(host="140.118.155.126",user="test",passwd="123",db="user_infor") #ip要改
 	cursor = db.cursor()
