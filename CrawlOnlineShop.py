@@ -24,12 +24,36 @@ def main():
 		elif num == 1:
 			raku = parseRaku.tablet()
 			raku.start_requests()
+		elif num == 2:
+			cellphone = parsePc.crawler()
+			cellphone.search_items('手機')
+			time.sleep(10)
+			notebook = parsePc.crawler()
+			notebook.search_items('筆電')
+			time.sleep(10)
+			pad = parsePc.crawler()
+			pad.search_items('平板')
+			cell = parsePc.database('cellphone')
+			cell.conn = lite.connect(cell.db_name)
+			cell.cur = cell.conn.cursor()         
+			cell.insert_items(cellphone.items, 'new')
+			cell.conn.close()
+			note = parsePc.database('notebook')
+			note.conn = lite.connect(note.db_name)
+			note.cur = note.conn.cursor()         
+			note.insert_items(notebook.items, 'new')
+			note.conn.close()
+			paddd = parsePc.database('pad')
+			paddd.conn = lite.connect(paddd.db_name)
+			paddd.cur = paddd.conn.cursor()         
+			paddd.insert_items(pad.items, 'new')
+			paddd.conn.close()
 	def func():
 		try:
-			for i in range(2):
+			for i in range(3):
 				threads.append(threading.Thread(target = job, args = (i,)))
 				threads[i].start()   
-			for i in range(2):
+			for i in range(3):
 				threads[i].join()
 		except:
 			logging.error("Error: parse error")
@@ -87,10 +111,10 @@ def main():
 	lineSub = cur.fetchall()
 	db.close()
 	global productC, userC, lineC
-	threads = []
 	productC = len(prodData)
 	userC = len(userData)
 	lineC = len(lineSub)
+	threads = []
 	func()
 	getMysql()
 if __name__ == "__main__":
