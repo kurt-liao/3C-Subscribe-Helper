@@ -1,9 +1,3 @@
-
-# coding: utf-8
-
-# In[6]:
-
-
 from bs4 import BeautifulSoup 
 import scrapy
 from selenium import webdriver
@@ -38,8 +32,7 @@ class parseRuten(scrapy.Spider):
     urlclass = "new"
     databaseclass = "old"
     urlclasscount = 0
-    urlpage = 0
-    
+    urlpage = 0  
     db_title =[]
     db_price = []
     db_web = []
@@ -62,13 +55,11 @@ class parseRuten(scrapy.Spider):
         self.cur.execute('create table if not exists old(title text,price integer,website text,date timestamp,flag);')
         self.cur.execute('create table if not exists new(title text,price integer,website text,date timestamp,flag);')
         self.conn.close()
-        #print("init cellphone")
         self.conn = lite.connect('./Database/notebook.sqlite')
         self.cur = self.conn.cursor()
         self.cur.execute('create table if not exists old(title text,price integer,website text,date timestamp,flag);')
         self.cur.execute('create table if not exists new(title text,price integer,website text,date timestamp,flag);')
         self.conn.close()
-        #print("init notebook")
         self.conn = lite.connect('./Database/pad.sqlite')
         self.cur = self.conn.cursor()
         self.cur.execute('create table if not exists old(title text,price integer,website text,date timestamp,flag);')
@@ -126,7 +117,6 @@ class parseRuten(scrapy.Spider):
                 self.cur.execute("SELECT * FROM old where flag='1';")
                 self.urlclasscount = 3
             nowProd = self.cur.fetchall()
-            #print(len(nowProd))
             for product in nowProd:
                 self.db_intitle.append(product[0])                 
                 self.db_inprice.append(product[1])                 
@@ -134,7 +124,6 @@ class parseRuten(scrapy.Spider):
                 self.db_indate.append(product[3])
                 self.db_incheck.append(0)
             #print(len(self.db_inweb))                                #目前資料總數
-            #print("success select all data from database")
         except:             
             print("Error: can't take product from database")         
         self.conn.close()         
@@ -144,7 +133,7 @@ class parseRuten(scrapy.Spider):
             chrome_path = "D:\chromedriver.exe"
             self.driver = webdriver.Chrome(chrome_path) #chromedriver
         elif(sys.argv[1] == "firefox"):
-            self.driver = webdriver.Firefox()		
+            self.driver = webdriver.Firefox()	
         for start in self.start_urls:
             self.urlclasscount += 1
             #print(self.urlclasscount)
@@ -250,4 +239,3 @@ class parseRuten(scrapy.Spider):
             self.conn.close()
             print("end of program")
         self.driver.close()
-

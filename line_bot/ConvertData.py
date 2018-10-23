@@ -6,6 +6,7 @@ from datetime import timedelta
 
 def passDatabase():
 	insertsql = "insert into subDB(username,product,price,type,duetime,is_LineSub,isInSql) values(?,?,?,?,?,?,?)"
+	insertuser = "insert into personDB(username,password,userid,used) values(?,?,?,?)"
 	mysqldb = "user_infor"
 	mysqlhost = "140.118.155.126"
 	mysqluser = "test"
@@ -19,15 +20,25 @@ def passDatabase():
 
 	mycur.execute("SELECT * FROM user_infor.searchtable")
 	pyresults = mycur.fetchall()
+	mycur.execute("SELECT * FROM user_infor.userinformation")
+	pyuser = mycur.fetchall()
 	#崇恩 database
-	conn = lite.connect('../Database/mysqlDB.sqlite')
-	print("sql")
+	conn = lite.connect('./Database/mysqlDB.sqlite')
 	cur = conn.cursor()
 	cur.execute('create table if not exists subDB(username text,product text,price text,type text,duetime timestamp,is_LineSub int,isInSql INTEGER);')
 	cur.execute('select * from subDB')
 	results = cur.fetchall()
+	cur.execute('select * from personDB')
+	sqluser = cur.fetchall()
 	print(len(results))
-
+	for i in range(len(pyuser)):
+		count = 0
+		for j in range(len(sqluser)):	
+				if(pyuser[i][1] == sqluser[j][0] and pyuser[i][2] == sqluser[j][1]):   #判斷是否存在
+					count = 1
+		if(count != 1):
+			cur.execute(insertuser, (pyuser[i][1], pyuser[i][2],0,0))
+			conn.commit()
 	#明軒 in 崇恩
 	for i in range(len(pyresults)):
 		count = 0						#count 用來決定是否要存 1不存 0存
@@ -65,3 +76,4 @@ def passDatabase():
 				print("Request '%s' was not exist")
 	conn.close()
 	mysql_conn.close()
+passDatabase()

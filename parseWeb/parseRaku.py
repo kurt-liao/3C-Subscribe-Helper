@@ -1,9 +1,3 @@
-
-# coding: utf-8
-
-# In[32]:
-
-
 from bs4 import BeautifulSoup 
 import scrapy 
 from selenium import webdriver
@@ -286,8 +280,7 @@ class tablet(scrapy.Spider):
             for fi in range(len(self.old_check_exist)):#刪除下架商品
                 if(self.old_check_exist[fi]==0):
                     self.cur.execute("DELETE from old where website = '%s' " %(self.old_inweb[fi])) 
-                    self.conn.commit() 
-        
+                    self.conn.commit()         
         self.old_intitle.clear()
         self.old_inprice.clear()
         self.old_inweb.clear()
@@ -297,7 +290,5 @@ class tablet(scrapy.Spider):
         self.conn.close()
         #print('db close')
         self.driver.quit()
-
     def db_closed(self):   
         self.conn.close()
-

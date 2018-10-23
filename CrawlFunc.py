@@ -37,7 +37,7 @@ def check_request(results):
                     title,price,website = checkProd(r[3],r[4],newwant)
                     if len(title)!=0:
                         context = ""
-                        cursor.execute("DELETE FROM user_infor.searchtable where userName = '%s' " %r[0])
+                        cursor.execute("DELETE FROM user_infor.searchtable where id = '%s' " %int(r[0]))
                         for j in range(len(title)):
                             url = website[j]
                             ti = title[j]
