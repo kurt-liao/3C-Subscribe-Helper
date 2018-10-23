@@ -86,7 +86,7 @@ class database():
                         self.conn.execute("UPDATE old set date = ? where website = ?",(new_item[3], new_item[2]))
                         items.remove(new_item)
                     else:
-                        self.conn.execute('DELETE from ? where website = ?;',(table_name, old_item[2]))
+                        self.conn.execute("DELETE from "+ table_name +" where website = '" + old_item[2] +"' ;")
         #print(items)
     def show_data(self, table_name):
         sql = 'select * from '+ table_name + ' order by price'

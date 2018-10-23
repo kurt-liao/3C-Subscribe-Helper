@@ -21,9 +21,11 @@ def main():
 		if num == 0:
 			rute = parseRute.parseRuten()
 			rute.parse()
+			pass
 		elif num == 1:
-			raku = parseRaku.tablet()
-			raku.start_requests()
+			#raku = parseRaku.tablet()
+			#raku.start_requests()
+			pass
 		elif num == 2:
 			cellphone = parsePc.crawler()
 			cellphone.search_items('手機')
