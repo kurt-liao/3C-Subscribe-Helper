@@ -284,12 +284,35 @@ def handle_message(event):
             db.close_db()
 #---------------------------------------------------------------------------------------------
         elif event.message.text=="訂閱" and LINE_COMMAND==3:
-            reply_text="請輸入種類編號\n"+"1: 手機\n"+"2: 平板\n"+"3: 筆電"
-            line_bot_api.reply_message(event.reply_token,TextSendMessage(text=reply_text))
+            #reply_text="請輸入種類編號\n"+"1: 手機\n"+"2: 平板\n"+"3: 筆電"
+            #line_bot_api.reply_message(event.reply_token,TextSendMessage(text=reply_text))
+            buttons_template = TemplateSendMessage(
+                alt_text='Buttons Template',
+                template=ButtonsTemplate(
+                    title='商品訂閱',
+                    text='請點選種類',
+                    #thumbnail_image_url='',
+                    actions=[
+                        MessageTemplateAction(
+                            label='1: 手機',
+                            text='1'
+                        ),
+                        MessageTemplateAction(
+                            label='2: 平板',
+                            text='2'
+                        ),
+                        MessageTemplateAction(
+                            label='3: 筆電',
+                            text='3'
+                        )
+                    ]
+                )
+            )
+            line_bot_api.reply_message(event.reply_token, buttons_template)
             db.connect_mysqlDB()
             LINE_COMMAND=5
             db.change_command(userID,LINE_COMMAND)
-            db.close_db()
+            db.close_db()          
         elif LINE_COMMAND==5:
             db.connect_mysqlDB()
             is_number=check_is_number(event.message.text)
