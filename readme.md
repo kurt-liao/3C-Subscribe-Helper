@@ -1,4 +1,4 @@
-# INPENDENT STUDY : 幫訂閱者找尋符合商品
+# 3C Subscribe Helper : 幫訂閱者找尋符合商品
 ## 流程 :
 1. Parsing online shopping website(PCHome,Ruten,Rakuten).
 2. Check subscriber's requests.
