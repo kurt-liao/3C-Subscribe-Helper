@@ -1,4 +1,4 @@
-from dbhelper import DBHelper
+import pymysql
 from datetime import timedelta
 #第一次
 #db = DBHelper()
@@ -75,8 +75,9 @@ for each_sub in ALLsub:
         fixed_each_userid=each_userid_text[2:-3]
         fixed_each_userid=fixed_each_userid.replace('\'','')
 
-        line_bot_api.push_message(fixed_each_userid,TextSendMessage(text=each_push_text))                     
-        db.delete_sub(each_sub_name,each_sub[0],each_sub[1])
+        if(len(fixed_each_userid)==33):
+            line_bot_api.push_message(fixed_each_userid,TextSendMessage(text=each_push_text))                     
+            db.delete_sub(each_sub_name,each_sub[0],each_sub[1])
         db.close_db() 
 db.close_db() 
 
@@ -87,10 +88,10 @@ db.close_db()
 @app.route("/", methods=['GET'])
 def hello():
     return "Hello World!!"
-
+    
 
 @app.route("/callback", methods=['POST'])
-def callback():
+def callback():   
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
 
@@ -100,10 +101,10 @@ def callback():
     # handle webhook body
     try:
         handler.handle(body, signature)
-        
     except InvalidSignatureError:
         abort(400)
-    
+
+
     return 'OK'
 
 @handler.add(MessageEvent, message=TextMessage)
@@ -273,6 +274,19 @@ def handle_message(event):
             is_number=check_is_number(event.message.text)
             if is_number==True:
                 if int(event.message.text)<=len(SUB) and int(event.message.text)>0:
+                    mysqldb = "user_infor"
+                    mysqlhost = "140.118.155.126"
+                    mysqluser = "test"
+                    mysqlpwd = "123"
+
+                    mysql_conn = pymysql.connect(host=mysqlhost, user=mysqluser, passwd=mysqlpwd, db=mysqldb)
+                    mycur = mysql_conn.cursor()
+                    deletsql = ("delete from user_infor.searchtable where (userName,product,price,type) = (%s,%s,%s,%s)")
+                    data = (str(account_number),str(SUB[int(event.message.text)-1][0]),int(SUB[int(event.message.text)-1][1])) 
+                    mycur.execute(deletsql,data)
+                    mysql_conn.commit()
+                    mysql_conn.close()
+                    
                     db.delete_sub(account_number,SUB[int(event.message.text)-1][0],SUB[int(event.message.text)-1][1])
                     line_bot_api.reply_message(event.reply_token,TextSendMessage(text="刪除成功"))
                 else:
