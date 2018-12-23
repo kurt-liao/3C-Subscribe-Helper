@@ -54,7 +54,7 @@ class MYSQL_Helper:
         self.conn.commit()
 
     #連線到訂購資料DB
-    def connect_mysqlDB(self, dbname="..//Database//mysqlDB.sqlite"):
+    def connect_mysqlDB(self, dbname="..\\Database\\mysqlDB.sqlite"):
         self.dbname = dbname
         self.conn = sqlite3.connect(dbname)
     #確認人員表在不在
@@ -106,9 +106,9 @@ class MYSQL_Helper:
         self.conn.execute(stmt, args)
         self.conn.commit()
     #刪除訂閱
-    def delete_sub(self, username, product, price):
-        stmt = "DELETE FROM subDB WHERE username = (?) and product=(?) and price=(?)"
-        args = (username, product, price, )
+    def delete_sub(self, username, product, price,type):
+        stmt = "DELETE FROM subDB WHERE username = (?) and product=(?) and price=(?) and type=(?)"
+        args = (username, product, price, type,)
         self.conn.execute(stmt, args)
         self.conn.commit()
     #目前沒用到
@@ -134,7 +134,7 @@ class MYSQL_Helper:
         self.conn.commit()
         result=self.cur.fetchall()
         return result
-    def get_tabletitem_new(self, dbname="..//Database//pad.sqlite"):
+    def get_tabletitem_new(self, dbname="..\\Database\\pad.sqlite"):
         self.dbname = dbname
         self.conn = sqlite3.connect(dbname)
         #stmt1 = "CREATE TABLE IF NOT EXISTS old_tablet_table (title text,price integer,website text,date timestamp,flag integer)"
@@ -146,7 +146,7 @@ class MYSQL_Helper:
         result=self.cur.fetchall()
         return result
     #從cellphone資料庫拿上架商品 #1
-    def get_cellphoneitem_old(self, dbname="..//Database//cellphone.sqlite"):
+    def get_cellphoneitem_old(self, dbname="..\\Database\\cellphone.sqlite"):
         self.dbname = dbname
         self.conn = sqlite3.connect(dbname)
         #stmt1 = "CREATE TABLE IF NOT EXISTS old_cellphone_table (title text,price integer,website text,date timestamp,flag integer)"
@@ -157,7 +157,7 @@ class MYSQL_Helper:
         self.conn.commit()
         result=self.cur.fetchall()
         return result
-    def get_cellphoneitem_new(self, dbname="..//Database//cellphone.sqlite"):
+    def get_cellphoneitem_new(self, dbname="..\\Database\\cellphone.sqlite"):
         self.dbname = dbname
         self.conn = sqlite3.connect(dbname)
         #stmt1 = "CREATE TABLE IF NOT EXISTS old_cellphone_table (title text,price integer,website text,date timestamp,flag integer)"
@@ -169,7 +169,7 @@ class MYSQL_Helper:
         result=self.cur.fetchall()
         return result
     #從notebook資料庫拿上架商品 #3
-    def get_notebookitem_old(self, dbname="..//Database//notebook.sqlite"):
+    def get_notebookitem_old(self, dbname="..\\Database\\notebook.sqlite"):
         self.dbname = dbname
         self.conn = sqlite3.connect(dbname)
         #stmt1 = "CREATE TABLE IF NOT EXISTS old_notebook_table (title text,price integer,website text,date timestamp,flag integer)"
@@ -180,7 +180,7 @@ class MYSQL_Helper:
         self.conn.commit()
         result=self.cur.fetchall()
         return result
-    def get_notebookitem_new(self, dbname="..//Database//notebook.sqlite"):
+    def get_notebookitem_new(self, dbname="..\\Database\\notebook.sqlite"):
         self.dbname = dbname
         self.conn = sqlite3.connect(dbname)
         #stmt1 = "CREATE TABLE IF NOT EXISTS old_notebook_table (title text,price integer,website text,date timestamp,flag integer)"

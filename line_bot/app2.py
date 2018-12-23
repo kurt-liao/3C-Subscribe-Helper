@@ -33,7 +33,7 @@ def daily_push():
         each_push_text="符合需求的商品:\n"
         num=0
         for temp in each_website:
-            print(temp)
+            #print(temp)
             index=num+1            
             if num<10:  
                 each_push_text+=str(index)+". "+str(each_title[num])+" $"+str(each_price[num])+" "+temp+"\n"
@@ -54,7 +54,7 @@ def daily_push():
             fixed_each_userid=fixed_each_userid.replace('\'','')
             if(len(fixed_each_userid)==33):
                 line_bot_api.push_message(fixed_each_userid,TextSendMessage(text=each_push_text))                     
-                db.delete_sub(each_sub_name,each_sub[0],each_sub[1])
+                db.delete_sub(each_sub_name,each_sub[0],each_sub[1],each_sub[2])
             db.close_db() 
     db.close_db() 
 
@@ -64,11 +64,4 @@ line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 schedule.every().seconds.do(daily_push)
 while True:
     schedule.run_pending()
-    time.sleep(10)
-"""
-try:
-    line_bot_api.push_message(to, TextSendMessage(text='台科大電腦研習社'))
-except LineBotApiError as e:
-    # error handle
-    raise e
-"""
+    time.sleep(1)

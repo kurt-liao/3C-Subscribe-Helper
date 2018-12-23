@@ -1,3 +1,4 @@
+#from dbhelper import DBHelper
 import pymysql
 from datetime import timedelta
 #第一次
@@ -33,7 +34,7 @@ import sched
 
 #取商品資料庫
 cellphone_items=db.get_cellphoneitem_new()
-print(cellphone_items[0])
+#print(cellphone_items[0])
 db.close_db()
 tablet_items=db.get_tabletitem_new()
 db.close_db()
@@ -55,7 +56,7 @@ for each_sub in ALLsub:
     each_push_text=""
     num=0
     for temp in each_website:
-        print(temp)
+        #print(temp)
         index=num+1            
         if num<10:  
             each_push_text+=str(index)+". "+str(each_title[num])+" $"+str(each_price[num])+" "+temp+"\n"
@@ -77,7 +78,7 @@ for each_sub in ALLsub:
 
         if(len(fixed_each_userid)==33):
             line_bot_api.push_message(fixed_each_userid,TextSendMessage(text=each_push_text))                     
-            db.delete_sub(each_sub_name,each_sub[0],each_sub[1])
+            db.delete_sub(each_sub_name,each_sub[0],each_sub[1],each_sub[2])
         db.close_db() 
 db.close_db() 
 
@@ -109,7 +110,7 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    
+    """
     if event.message.text=="a":
         #取商品資料庫
         tablet_items=db.get_tabletitem_new()
@@ -127,7 +128,7 @@ def handle_message(event):
                 each_title, each_price, each_website=checkProd(str(each_sub[0]),int(each_sub[1]),tablet_items)  
                 print(str(len(each_title))+"///////////////") 
         db.close_db()
-    
+    """
     msg = event.message.text
     #print(msg)
     #msg = msg.encode('utf-8')
@@ -142,7 +143,7 @@ def handle_message(event):
     db.connect_mysqlDB()
     line_user=db.get_line_useridAndCommand()
     for everyone_data in line_user:
-        print(everyone_data[0]+"**")
+        #print(everyone_data[0]+"**")
         if everyone_data[0]==userID:
             LINE_COMMAND=everyone_data[1]
             account_number=everyone_data[2]
@@ -274,6 +275,7 @@ def handle_message(event):
             is_number=check_is_number(event.message.text)
             if is_number==True:
                 if int(event.message.text)<=len(SUB) and int(event.message.text)>0:
+                    
                     mysqldb = "user_infor"
                     mysqlhost = "140.118.155.126"
                     mysqluser = "test"
@@ -282,12 +284,12 @@ def handle_message(event):
                     mysql_conn = pymysql.connect(host=mysqlhost, user=mysqluser, passwd=mysqlpwd, db=mysqldb)
                     mycur = mysql_conn.cursor()
                     deletsql = ("delete from user_infor.searchtable where (userName,product,price,type) = (%s,%s,%s,%s)")
-                    data = (str(account_number),str(SUB[int(event.message.text)-1][0]),int(SUB[int(event.message.text)-1][1])) 
+                    data = (str(account_number),str(SUB[int(event.message.text)-1][0]),int(SUB[int(event.message.text)-1][1]),int(SUB[int(event.message.text)-1][2])) 
                     mycur.execute(deletsql,data)
                     mysql_conn.commit()
                     mysql_conn.close()
                     
-                    db.delete_sub(account_number,SUB[int(event.message.text)-1][0],SUB[int(event.message.text)-1][1])
+                    db.delete_sub(account_number,SUB[int(event.message.text)-1][0],SUB[int(event.message.text)-1][1],SUB[int(event.message.text)-1][2])
                     line_bot_api.reply_message(event.reply_token,TextSendMessage(text="刪除成功"))
                 else:
                     line_bot_api.reply_message(event.reply_token,TextSendMessage(text="編號輸入錯誤，請重新輸入指令"))
@@ -367,7 +369,10 @@ def handle_message(event):
                 time_text=now.strftime('%Y-%m-%d')
                 db.add_sub(account_number,line_product,event.message.text,species,time_text,1)
                 line_bot_api.reply_message(event.reply_token,TextSendMessage(text="訂閱成功"))
+                LINE_COMMAND=3
+                db.change_command(userID,LINE_COMMAND)
                 db.close_db()
+                
                 
 
                 #直接找，找到再刪除訂閱商品
@@ -397,7 +402,7 @@ def handle_message(event):
                     if i!=0:
                         line_bot_api.push_message(userID,TextSendMessage(text=push_text))
                         db.connect_mysqlDB()                        
-                        db.delete_sub(account_number,line_product,event.message.text)
+                        db.delete_sub(account_number,line_product,event.message.text,species)
                         db.close_db()
                 elif int(species)==2:
                     items=db.get_tabletitem_old()
@@ -426,7 +431,7 @@ def handle_message(event):
                         line_bot_api.push_message(userID,TextSendMessage(text=push_text))
                         db.connect_mysqlDB()
                         db.check_subDB()                          
-                        db.delete_sub(account_number,line_product,event.message.text)
+                        db.delete_sub(account_number,line_product,event.message.text,species)
                         db.close_db()
                 elif int(species)==3:
                     items=db.get_notebookitem_old()
@@ -455,11 +460,11 @@ def handle_message(event):
                         line_bot_api.push_message(userID,TextSendMessage(text=push_text))
                         db.connect_mysqlDB()
                         db.check_subDB()                          
-                        db.delete_sub(account_number,line_product,event.message.text)
+                        db.delete_sub(account_number,line_product,event.message.text,species)
                         db.close_db()
-                db.connect_mysqlDB()
-                LINE_COMMAND=3
-                db.change_command(userID,LINE_COMMAND)
+                #db.connect_mysqlDB()
+                #LINE_COMMAND=3
+                #db.change_command(userID,LINE_COMMAND)
             db.close_db()
 
 if __name__ == "__main__":
